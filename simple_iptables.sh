@@ -17,16 +17,20 @@ $IPT -A OUTPUT -o lo -j ACCEPT
 
 # accept DNS
 $IPT -A INPUT -p udp -m udp --dport 53 -s 0.0.0.0/0 -j ACCEPT
-$IPT -A OUTPUT -p udp --dport 53 -m state --state NEW -j ACCEPT
+$IPT -A OUTPUT -p udp --dport 53 -j ACCEPT
 
 # accept DCHP
 #$IPT -A INPUT -p udp -m udp --dport 67 -s 0.0.0.0/0 -j ACCEPT
 
-# accept inboud ssh, http, and https
+# accept ssh, http, and https
 $IPT -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
 $IPT -A INPUT -p tcp --dport 22 -j ACCEPT
 $IPT -A INPUT -p tcp --dport 80 -j ACCEPT
 $IPT -A INPUT -p tcp --dport 443 -j ACCEPT
+$IPT -A OUTPUT -p tcp --sport 22 -j ACCEPT
+$IPT -A OUTPUT -p tcp --sport 80 -j ACCEPT
+$IPT -A OUTPUT -p tcp --sport 443 -j ACCEPT
 
-# save firewall file to 
-save_loc="/etc/iptables.rules"
+# save firewall file as SAVE_LOC 
+SAVE_LOC="/etc/iptables.rules"
+iptables-save > $SAVE_LOC
